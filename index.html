@@ -1062,8 +1062,27 @@
         });
 
         updateTime();
+
+// ===== Mantener música mientras se reproduce el video =====
+const videoElement = document.getElementById("videoElement");
+
+// Cuando el video intenta reproducirse, mantén la música
+videoElement.addEventListener("play", () => {
+    // Si el audio está pausado, lo reproduce de nuevo
+    if (audio.paused) {
+        audio.play().catch(e => console.log("Audio bloqueado"));
+    }
+});
+
+// Bajar volumen del video para que se escuche la música
+videoElement.volume = 0.3; // 30% de volumen para el video
+
+// Opcional: También puedes silenciar completamente el video
+// videoElement.muted = true; // Descomenta esta línea si quieres el video sin sonido
+        
     </script>
 
 </body>
+
 
 </html>
