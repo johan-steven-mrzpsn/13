@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carta para Brenda 💌</title>
+
+    <style>
+         :root {
+            --bg1: #2a0b12;
+            --bg2: #6a1021;
+            --accent: #ff4d6d;
+            --accent2: #ff7a92;
+            --shadow: 0 22px 70px rgba(0, 0, 0, .50);
+            --paper: #ffffff;
+            --paper2: #f3f1ee;
+            --envelope: #f6f8fb;
+            --envelope2: #e8eef6;
+            --ink: #2b1c1f;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            height: 100%;
+        }
+        
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: radial-gradient(900px 600px at 20% 10%, #8b1730, transparent 60%), radial-gradient(800px 550px at 85% 35%, #3b0c18, transparent 55%), linear-gradient(160deg, var(--bg2), var(--bg1));
+            color: #fff;
+            display: grid;
+            place-items: center;
+            padding: 14px;
+            overflow-x: hidden;
+        }
+        
+        .wrap {
+            width: min(560px, 100%);
+        }
+        
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 8px 14px;
+            opacity: .95;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+        }
+        
+        .pill {
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(255, 255, 255, .14);
+            backdrop-filter: blur(8px);
+            color: rgba(255, 255, 255, .88);
+        }
+        
+        .card {
+            border-radius: 26px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .06);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 14px 16px 0;
+            text-align: center;
+        }
+        
+        .title {
+            margin: 6px 0 2px;
+            font-size: clamp(18px, 4.8vw, 24px);
+            font-weight: 950;
+            letter-spacing: .2px;
+        }
+        
+        .subtitle {
+            margin: 0 0 12px;
+            font-size: clamp(12px, 3.3vw, 13px);
+            color: rgba(255, 255, 255, .80);
+            font-weight: 700;
+        }
+        /* ====== Pages (simple router) ====== */
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        /* ===== Envelope Scene ===== */
+        
+        .scene {
+            padding: 12px 16px 10px;
+            display: grid;
+            place-items: center;
+        }
+        
+        .envelope {
+            position: relative;
+            width: min(460px, 92vw);
+            aspect-ratio: 16 / 10;
+            border-radius: 22px;
+            background: radial-gradient(120% 90% at 50% 10%, rgba(255, 255, 255, .95), rgba(255, 255, 255, .35) 45%, rgba(0, 0, 0, .04) 100%), linear-gradient(180deg, var(--envelope), var(--envelope2));
+            border: 1px solid rgba(0, 0, 0, .10);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, .28);
+            overflow: hidden;
+            transform: translateZ(0);
+            perspective: 900px;
+        }
+        /* Pliegues del sobre */
+        
+        .crease1,
+        .crease2 {
+            position: absolute;
+            inset: -10%;
+            z-index: 3;
+            pointer-events: none;
+            opacity: .34;
+            filter: blur(.15px);
+        }
+        
+        .crease1 {
+            background: linear-gradient(135deg, rgba(0, 0, 0, .20), transparent 42%, transparent 58%, rgba(0, 0, 0, .18));
+            clip-path: polygon(0 0, 100% 0, 50% 62%);
+            top: -18%;
+        }
+        
+        .crease2 {
+            background: linear-gradient(225deg, rgba(0, 0, 0, .18), transparent 45%, transparent 55%, rgba(0, 0, 0, .16));
+            clip-path: polygon(0 100%, 100% 100%, 50% 62%);
+            bottom: -18%;
+        }
+        /* Letter (paper) */
+        
+        .letter {
+            position: absolute;
+            left: 50%;
+            max-height: 82%;
+            bottom: 8%;
+            transform: translateX(-50%) translateY(58%);
+            width: 88%;
+            height: auto;
+            background: linear-gradient(180deg, var(--paper), var(--paper2));
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, .10);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .18);
+            z-index: 1;
+            opacity: 0;
+            -webkit-overflow-scrolling: touch;
+            transition: transform 900ms cubic-bezier(.2, .9, .2, 1), opacity 220ms ease;
+            overflow: auto;
+        }
+        
+        .letter::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(600px 240px at 20% 10%, rgba(255, 255, 255, .95), transparent 60%), repeating-linear-gradient( 0deg, rgba(0, 0, 0, .06) 0px, rgba(0, 0, 0, .06) 1px, transparent 1px, transparent 15px);
+            opacity: .95;
+            pointer-events: none;
+        }
+        
+        .letter::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 14px;
+            width: 2px;
+            background: rgba(255, 77, 109, .42);
+            opacity: .95;
+            pointer-events: none;
+        }
+        
+        .letterInner {
+            position: relative;
+            padding: 16px 16px 18px 26px;
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+        }
+        
+        .letterTop {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(0, 0, 0, .16);
+        }
+        
+        .to {
+            font-weight: 950;
+            letter-spacing: .2px;
+        }
+        
+        .date {
+            font-size: 12px;
+            opacity: .65;
+            font-weight: 800;
+            text-align: right;
+            white-space: nowrap;
+        }
+        
+        .msg {
+            font-weight: 950;
+            font-size: clamp(14px, 3.9vw, 16px);
+            line-height: 1.25;
+        }
+        
+        .small {
+            font-size: clamp(12px, 3.4vw, 13px);
+            opacity: .85;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+        /* Flap */
+        
+        .flap {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 58%;
+            background: radial-gradient(110% 90% at 50% 0%, rgba(255, 255, 255, .95), rgba(255, 255, 255, .2) 60%, rgba(0, 0, 0, .06)), linear-gradient(180deg, #fbfdff, #dfe7f2);
+            border-bottom: 1px solid rgba(0, 0, 0, .10);
+            clip-path: polygon(0 0, 100% 0, 50% 70%);
+            transform-origin: 50% 0%;
+            transform: rotateX(0deg);
+            transition: transform 900ms cubic-bezier(.2, .9, .2, 1);
+            z-index: 6;
+            backface-visibility: hidden;
+        }
+        /* Side folds */
+        
+        .leftFold,
+        .rightFold {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .03), rgba(255, 255, 255, .42));
+            z-index: 2;
+            opacity: .95;
+        }
+        
+        .leftFold {
+            clip-path: polygon(0 30%, 50% 62%, 0 100%);
+        }
+        
+        .rightFold {
+            clip-path: polygon(100% 30%, 50% 62%, 100% 100%);
+        }
+        /* Pocket */
+        
+        .pocket {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(130% 90% at 50% 10%, rgba(255, 255, 255, .60), rgba(0, 0, 0, .02)), linear-gradient(180deg, rgba(255, 255, 255, .40), rgba(0, 0, 0, .03));
+            clip-path: polygon(0 30%, 50% 62%, 100% 30%, 100% 100%, 0 100%);
+            border-top: 1px solid rgba(0, 0, 0, .10);
+            z-index: 5;
+        }
+        /* Seal */
+        
+        .seal {
+            position: absolute;
+            left: 50%;
+            top: 44%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #ff9bb0, var(--accent));
+            box-shadow: 0 14px 30px rgba(255, 77, 109, .24);
+            border: 1px solid rgba(0, 0, 0, .10);
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            z-index: 7;
+            transition: transform 900ms cubic-bezier(.2, .9, .2, 1), opacity 350ms ease;
+        }
+        
+        .open .flap {
+            transform: rotateX(180deg);
+        }
+        
+        .open .seal {
+            transform: translate(-50%, -50%) scale(.92) translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .open .letter {
+            opacity: 1;
+            z-index: 8;
+            transform: translateX(-50%) translateY(-2%);
+        }
+        /* Flecha siguiente dentro de la carta */
+        
+        .nextInLetter {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            padding-top: 8px;
+        }
+        
+        .nextBtn {
+            width: 52px;
+            height: 52px;
+            border-radius: 999px;
+            border: 1px solid rgba(0, 0, 0, .10);
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #22040a;
+            box-shadow: 0 12px 24px rgba(255, 77, 109, .18);
+            cursor: pointer;
+            font-weight: 950;
+            font-size: 22px;
+            display: grid;
+            place-items: center;
+        }
+        /* Controls */
+        
+        .controls {
+            padding: 0 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        button {
+            border: 0;
+            cursor: pointer;
+            font-weight: 950;
+            letter-spacing: .2px;
+        }
+        
+        .btn {
+            padding: 14px 14px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #22040a;
+            box-shadow: 0 14px 30px rgba(255, 77, 109, .24);
+            transition: transform .08s ease;
+        }
+        
+        .btn:active {
+            transform: translateY(1px) scale(.99);
+        }
+        
+        .btnGhost {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .10);
+            color: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(255, 255, 255, .16);
+        }
+        /* Player */
+        
+        .player {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(255, 255, 255, .16);
+            backdrop-filter: blur(8px);
+        }
+        
+        .playBtn {
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #22040a;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 12px 22px rgba(255, 77, 109, .18);
+            flex: 0 0 auto;
+            font-size: 18px;
+            user-select: none;
+        }
+        
+        .trackInfo {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .trackTitle {
+            font-weight: 950;
+            font-size: 13px;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .trackArtist {
+            font-weight: 750;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .78);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .barRow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .20);
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            background: #fff;
+            border: 2px solid rgba(0, 0, 0, .10);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, .22);
+            cursor: pointer;
+        }
+        
+        .time {
+            font-variant-numeric: tabular-nums;
+            font-size: 11px;
+            color: rgba(255, 255, 255, .78);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        /* ===== Page 2 (nota con poema) ===== */
+        
+        .noteWrap {
+            padding: 14px 16px 16px;
+            display: grid;
+            gap: 12px;
+        }
+        
+        .noteCard {
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .07);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, .35);
+            overflow: hidden;
+        }
+        
+        .noteHeader {
+            padding: 14px 14px 0;
+            text-align: center;
+        }
+        
+        .noteTitle {
+            margin: 6px 0 2px;
+            font-size: clamp(16px, 4.5vw, 20px);
+            font-weight: 950;
+        }
+        
+        .noteSub {
+            margin: 0 0 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .78);
+            font-weight: 750;
+        }
+        
+        .noteBody {
+            padding: 12px 14px 14px;
+        }
+        
+        .notePaper {
+            border-radius: 18px;
+            background: linear-gradient(180deg, var(--paper), var(--paper2));
+            border: 1px solid rgba(0, 0, 0, .10);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .20);
+            color: var(--ink);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .notePaper::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(600px 260px at 20% 10%, rgba(255, 255, 255, .95), transparent 60%), repeating-linear-gradient( 0deg, rgba(0, 0, 0, .05) 0px, rgba(0, 0, 0, .05) 1px, transparent 1px, transparent 16px);
+            opacity: .95;
+            pointer-events: none;
+        }
+        
+        .notePaper::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 14px;
+            width: 2px;
+            background: rgba(255, 77, 109, .42);
+            opacity: .95;
+            pointer-events: none;
+        }
+        
+        .noteContent {
+            position: relative;
+            padding: 16px 16px 18px 26px;
+        }
+        
+        .noteText {
+            font-weight: 800;
+            font-size: clamp(12px, 3.3vw, 13px);
+            line-height: 1.4;
+            font-style: italic;
+        }
+        
+        .noteText p {
+            margin: 0 0 12px;
+        }
+        
+        .noteText p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .noteActions {
+            display: flex;
+            gap: 10px;
+            padding: 12px 14px 14px;
+        }
+        
+        .noteActions button {
+            flex: 1;
+        }
+        /* ===== Page 3 (video) ===== */
+        
+        .videoWrap {
+            padding: 14px 16px 16px;
+            display: grid;
+            gap: 12px;
+        }
+        
+        .videoCard {
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .07);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, .35);
+            overflow: hidden;
+        }
+        
+        .videoHeader {
+            padding: 14px 14px 0;
+            text-align: center;
+        }
+        
+        .videoTitle {
+            margin: 6px 0 2px;
+            font-size: clamp(18px, 4.8vw, 22px);
+            font-weight: 950;
+        }
+        
+        .videoSub {
+            margin: 0 0 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .78);
+            font-weight: 750;
+        }
+        
+        .videoBody {
+            padding: 12px 14px 14px;
+        }
+        
+        .videoPlayer {
+            border-radius: 18px;
+            background: rgba(0, 0, 0, .85);
+            border: 1px solid rgba(0, 0, 0, .10);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .20);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .videoPlayer video {
+            width: 100%;
+            display: block;
+            border-radius: 18px;
+        }
+        
+        .videoActions {
+            display: flex;
+            gap: 10px;
+            padding: 12px 14px 14px;
+        }
+        
+        .videoActions button {
+            flex: 1;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 12px 8px 0;
+            color: rgba(255, 255, 255, .55);
+            font-size: 12px;
+        }
+        /* Modal password */
+        
+        .modalBack {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 14px;
+            z-index: 50;
+        }
+        
+        .modalBack.show {
+            display: flex;
+        }
+        
+        .modal {
+            width: min(560px, 100%);
+            background: linear-gradient(180deg, rgba(20, 6, 10, .92), rgba(10, 4, 7, .92));
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 14px;
+            backdrop-filter: blur(14px);
+            transform: translateY(10px);
+            opacity: 0;
+            transition: .18s ease;
+        }
+        
+        .modalBack.show .modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .field {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        input.pass {
+            flex: 1;
+            padding: 13px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .18);
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+        }
+        
+        .miniBtn {
+            padding: 13px 14px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ffe2e8, #ffd6df);
+            color: #22040a;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+        
+        .hint {
+            margin: 0;
+            color: rgba(255, 255, 255, .75);
+            font-size: 13px;
+            line-height: 1.35;
+            font-weight: 700;
+        }
+        
+        .error {
+            display: none;
+            margin: 10px 2px 0;
+            color: #ffd6df;
+            font-size: 13px;
+            opacity: .95;
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="top">
+            <div class="pill">HOLA TE VOY A HACKER:C</div>
+        </div>
+
+        <div class="card">
+
+            <!-- ===== PAGE 1 ===== -->
+            <section class="page active" id="page1">
+                <div class="header">
+                    <div class="title">Tengo una carta para ti</div>
+                    <div class="subtitle">Presiona "Abrir carta" 💗</div>
+                </div>
+
+                <div class="scene">
+                    <div class="envelope" id="envelope">
+                        <div class="crease1"></div>
+                        <div class="crease2"></div>
+
+                        <div class="flap"></div>
+                        <div class="seal">❤</div>
+
+                        <div class="letter" aria-label="Carta" id="letter">
+                            <div class="letterInner">
+                                <div class="letterTop">
+                                    <div class="to">Para el amor de mi vida:c</div>
+                                    <div class="date" id="today">💗</div>
+                                </div>
+
+                                <div class="small"> Te hice esto con todo mi corazón para recordarte lo mucho que te quiero.
+                                </div>
+
+                                <div class="small">
+                                    Desde el día que regresaste, disfruto de ti: de tu compañía, de tus bromas, de tus abrazos, de tus besos… de absolutamente todo.
+                                </div>
+
+                                <div class="small">
+                                    Coincidir contigo mejoró mi vida tanto asi que te volvería a elegir una y mil veces más. 💗
+                                </div>
+
+
+                                <div class="nextInLetter">
+                                    <button class="nextBtn" id="nextFromLetter" aria-label="Siguiente">↓</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="leftFold"></div>
+                        <div class="rightFold"></div>
+                        <div class="pocket"></div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" id="openBtn">Abrir carta</button>
+
+                    <!-- Player -->
+                    <div class="player" id="player">
+                        <button class="playBtn" id="playBtn" aria-label="Play/Pause">▶</button>
+
+                        <div class="trackInfo">
+                            <div class="trackTitle">Turning Page</div>
+                            <div class="trackArtist">Sleeping at Last</div>
+
+                            <div class="barRow">
+                                <input id="seek" type="range" min="0" max="100" value="0" />
+                                <div class="time" id="time">00:00 / 00:00</div>
+                            </div>
+                        </div>
+
+                        <audio id="audio" src="1.mp3" preload="metadata"></audio>
+                    </div>
+
+                    <button class="btnGhost" id="resetBtn" type="button">Cerrar</button>
+                </div>
+            </section>
+
+            <!-- ===== PAGE 2 ===== -->
+            <section class="page" id="page2">
+                <div class="noteWrap">
+                    <div class="noteCard">
+                        <div class="noteHeader">
+                            <div class="noteTitle">Una notita para ti 💗</div>
+                            <div class="noteSub">Desliza/lee con calma</div>
+                        </div>
+
+                        <div class="noteBody">
+                            <div class="notePaper">
+                                <div class="noteContent">
+                                    <div class="noteText">
+                                        <p>"Te elijo con los ojos abiertos, sabiendo que amar no siempre es fácil.</p>
+
+                                        <p>Te elijo en tus luces y en tus sombras, en tus días de calma y en tus días de caos. Te elijo no porque te necesite, sino porque contigo la vida se siente más bonita. No busco perfección, busco presencia.</p>
+
+                                        <p>Te escojo en lo simple, en el café compartido, en las risas sin motivo, en los silencios que no incomodan.</p>
+
+                                        <p>Te escojo incluso cuando dudo, incluso cuando la vida se complica, porque el amor real no se trata de sentir siempre lo mismo, sino de elegir quedarse incluso cuando cuesta.</p>
+
+                                        <p>Y si la vida me diera mil opciones, igual te escogería a ti, una y otra vez, con todo lo que eso implica."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="noteActions">
+                            <button class="btnGhost" id="backToLetter">Volver</button>
+                            <button class="btn" id="nextToVideo">Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== PAGE 3 (Video) ===== -->
+            <section class="page" id="page3">
+                <div class="videoWrap">
+                    <div class="videoCard">
+                        <div class="videoHeader">
+                            <div class="videoTitle">Feliz 14 mi niña linda 💗</div>
+                            <div class="videoSub">Nuestros momentos donde te mato de iras y te quieres bajar del carro o terminarme jajajaja:0</div>
+                        </div>
+
+                        <div class="videoBody">
+                            <div class="videoPlayer">
+                                <video id="videoElement" controls playsinline>
+                                    <source src="3.mp4" type="video/mp4">
+                                    Tu navegador no soporta el elemento de video.
+                                </video>
+                            </div>
+                        </div>
+
+                        <div class="videoActions">
+                            <button class="btnGhost" id="backToNote">Volver</button>
+                            <button class="btn" id="finalBtn">Finalizar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="footer">Hecho con ❤️</div>
+    </div>
+
+    <!-- Modal contraseña -->
+    <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
+        <div class="modal">
+            <h2 style="margin:0; font-size:18px;">Escribe la contraseña ✨</h2>
+
+            <div class="field">
+                <input class="pass" id="passInput" type="password" placeholder="Contraseña" autocomplete="off" />
+                <button class="miniBtn" id="unlockBtn">Abrir</button>
+            </div>
+            <div class="error" id="errorMsg">Contraseña incorrecta 😅 Intenta de nuevo.</div>
+
+            <div style="display:flex; gap:10px; margin-top:12px;">
+                <button class="btnGhost" id="closeModal" style="flex:1;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PASSWORD = "TEQUIEROBRENDA";
+
+        // Pages
+        const page1 = document.getElementById("page1");
+        const page2 = document.getElementById("page2");
+        const page3 = document.getElementById("page3");
+
+        function showPage(n) {
+            page1.classList.remove("active");
+            page2.classList.remove("active");
+            page3.classList.remove("active");
+
+            if (n === 1) page1.classList.add("active");
+            else if (n === 2) page2.classList.add("active");
+            else if (n === 3) page3.classList.add("active");
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        // Envelope
+        const envelope = document.getElementById("envelope");
+        const openBtn = document.getElementById("openBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const nextFromLetter = document.getElementById("nextFromLetter");
+
+        // Modal
+        const modalBack = document.getElementById("modalBack");
+        const passInput = document.getElementById("passInput");
+        const unlockBtn = document.getElementById("unlockBtn");
+        const closeModal = document.getElementById("closeModal");
+        const errorMsg = document.getElementById("errorMsg");
+
+        // Date
+        const today = document.getElementById("today");
+        try {
+            const d = new Date();
+            const opts = {
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
+            };
+            today.textContent = d.toLocaleDateString("es-EC", opts);
+        } catch (e) {}
+
+        function openModal() {
+            errorMsg.style.display = "none";
+            passInput.value = "";
+            modalBack.classList.add("show");
+            setTimeout(() => passInput.focus(), 60);
+        }
+
+        function closeModalFn() {
+            modalBack.classList.remove("show");
+        }
+
+        function openEnvelope() {
+            envelope.classList.add("open");
+            openBtn.style.display = "none";
+            tryPlay();
+        }
+
+        function closeEnvelope() {
+            envelope.classList.remove("open");
+            openBtn.style.display = "";
+        }
+
+        openBtn.addEventListener("click", () => {
+            if (envelope.classList.contains("open")) return;
+            openModal();
+        });
+
+        unlockBtn.addEventListener("click", () => {
+            const val = (passInput.value || "").trim().toUpperCase();
+            if (val === PASSWORD) {
+                closeModalFn();
+                openEnvelope();
+            } else {
+                errorMsg.style.display = "block";
+                passInput.select();
+            }
+        });
+
+        passInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") unlockBtn.click();
+            if (e.key === "Escape") closeModalFn();
+        });
+
+        closeModal.addEventListener("click", closeModalFn);
+        modalBack.addEventListener("click", (e) => {
+            if (e.target === modalBack) closeModalFn();
+        });
+
+        resetBtn.addEventListener("click", () => {
+            closeEnvelope();
+            showPage(1);
+        });
+
+        // Navegación entre páginas
+        nextFromLetter.addEventListener("click", () => {
+            showPage(2);
+        });
+
+        document.getElementById("backToLetter").addEventListener("click", () => {
+            showPage(1);
+        });
+
+        document.getElementById("nextToVideo").addEventListener("click", () => {
+            showPage(3);
+        });
+
+        document.getElementById("backToNote").addEventListener("click", () => {
+            showPage(2);
+        });
+
+        document.getElementById("finalBtn").addEventListener("click", () => {
+            showPage(1);
+            closeEnvelope();
+        });
+
+        // ===== Player logic =====
+        const audio = document.getElementById("audio");
+        const playBtn = document.getElementById("playBtn");
+        const seek = document.getElementById("seek");
+        const time = document.getElementById("time");
+
+        let dragging = false;
+
+        function fmt(sec) {
+            sec = Math.max(0, sec | 0);
+            const m = String(Math.floor(sec / 60)).padStart(2, "0");
+            const s = String(sec % 60).padStart(2, "0");
+            return `${m}:${s}`;
+        }
+
+        function updateTime() {
+            const cur = audio.currentTime || 0;
+            const dur = audio.duration || 0;
+            if (!dragging && dur > 0) {
+                seek.value = String((cur / dur) * 100);
+            }
+            time.textContent = `${fmt(cur)} / ${dur ? fmt(dur) : "00:00"}`;
+        }
+
+        async function tryPlay() {
+            try {
+                await audio.play();
+                playBtn.textContent = "⏸";
+            } catch (e) {
+                // autoplay bloqueado
+            }
+        }
+
+        playBtn.addEventListener("click", async() => {
+            try {
+                if (audio.paused) {
+                    await audio.play();
+                    playBtn.textContent = "⏸";
+                } else {
+                    audio.pause();
+                    playBtn.textContent = "▶";
+                }
+            } catch (e) {
+                alert("Tu navegador bloqueó el audio. Intenta de nuevo tocando Play.");
+            }
+        });
+
+        audio.addEventListener("loadedmetadata", updateTime);
+        audio.addEventListener("timeupdate", updateTime);
+        audio.addEventListener("ended", () => {
+            playBtn.textContent = "▶";
+        });
+
+        seek.addEventListener("input", () => {
+            dragging = true;
+            const dur = audio.duration || 0;
+            if (dur > 0) {
+                const target = (Number(seek.value) / 100) * dur;
+                time.textContent = `${fmt(target)} / ${fmt(dur)}`;
+            }
+        });
+
+        seek.addEventListener("change", () => {
+            const dur = audio.duration || 0;
+            if (dur > 0) {
+                audio.currentTime = (Number(seek.value) / 100) * dur;
+            }
+            dragging = false;
+        });
+
+        updateTime();
+    </script>
+
+</body>
+
+</html>
